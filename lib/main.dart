@@ -8,7 +8,6 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   final database = LocalDatabase();
-
   GetIt.I.registerSingleton<LocalDatabase>(database);
 
   initializeDateFormatting().then((_) => runApp(

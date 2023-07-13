@@ -4,7 +4,7 @@ import 'package:simple_todo/constant/custom_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../database.dart';
+import 'package:simple_todo/database.dart';
 
 class TodoCard extends StatelessWidget {
   final int id;
