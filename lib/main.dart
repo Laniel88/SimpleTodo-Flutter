@@ -11,9 +11,15 @@ void main() {
   GetIt.I.registerSingleton<LocalDatabase>(database);
 
   initializeDateFormatting().then((_) => runApp(
-        const MaterialApp(
+        MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: HomeScreen(),
+          builder: ((context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+              child: child!,
+            );
+          }),
+          home: const HomeScreen(),
         ),
       ));
 }

@@ -52,7 +52,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                 size: 25,
               ),
             ),
-            rowHeight: 59,
+            rowHeight: 56,
             onDaySelected: widget.onDaySelected,
             selectedDayPredicate: widget.selectedDayPredicate,
             calendarStyle: const CalendarStyle(

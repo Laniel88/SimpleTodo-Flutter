@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eos23.esc.eos_todo">
    <application
-        android:label="simple_todo"
+        android:label="Simple Todo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
