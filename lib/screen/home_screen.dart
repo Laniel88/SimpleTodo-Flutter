@@ -45,38 +45,47 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              CustomCalendar(
-                  focusedDay: _focusedDate,
-                  onDaySelected: (DateTime selectedDate, DateTime focusedDate) {
-                    setState(() {
-                      _selectedDate = selectedDate;
-                      _focusedDate = selectedDate;
-                      // _focusedDay = selectedDay;
-                    });
-                  },
-                  selectedDayPredicate: (DateTime date) {
-                    return date.year == _selectedDate.year &&
-                        date.month == _selectedDate.month &&
-                        date.day == _selectedDate.day;
-                  }),
-              const CustomDivider(),
-              Expanded(
-                child: StreamBuilder<List<TodoTableData>>(
-                    stream: GetIt.I<LocalDatabase>().watchTodos(),
-                    builder: (context, snapshot) {
-                      List<TodoTableData> todos = [];
+          child: StreamBuilder<List<TodoTableData>>(
+              stream: GetIt.I<LocalDatabase>().watchTodos(),
+              builder: (context, snapshot) {
+                // TodoList for selectedDate (used in ListView)
+                List<TodoTableData> selectedTodos = [];
+                if (snapshot.hasData) {
+                  selectedTodos = snapshot.data!
+                      .where((todo) => todo.date.toUtc() == _selectedDate)
+                      .toList();
+                }
 
-                      if (snapshot.hasData) {
-                        todos = snapshot.data!
-                            .where((todo) => todo.date.toUtc() == _selectedDate)
-                            .toList();
-                      }
-                      return ListView.builder(
-                        itemCount: todos.length,
+                return Column(
+                  children: [
+                    CustomCalendar(
+                        focusedDay: _focusedDate,
+                        eventLoader: (DateTime date) {
+                          if (snapshot.hasData && date != _selectedDate) {
+                            final length = snapshot.data!
+                                .where((todo) => todo.date.toUtc() == date)
+                                .length;
+                            return List.generate(length, (_) => true);
+                          }
+                          return [];
+                        },
+                        onDaySelected: (DateTime selectedDate, _) {
+                          setState(() {
+                            _selectedDate = selectedDate;
+                            _focusedDate = selectedDate;
+                          });
+                        },
+                        selectedDayPredicate: (DateTime date) {
+                          return date.year == _selectedDate.year &&
+                              date.month == _selectedDate.month &&
+                              date.day == _selectedDate.day;
+                        }),
+                    const CustomDivider(),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: selectedTodos.length,
                         itemBuilder: (context, index) {
-                          final todo = todos[index];
+                          final todo = selectedTodos[index];
                           return Dismissible(
                             key: ObjectKey(todo.id),
                             direction: DismissDirection.endToStart,
@@ -90,22 +99,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                 finished: todo.finished),
                           );
                         },
-                      );
-                    }),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.0),
-                child: Text(
-                  "HYU EOS 2023",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
-                    fontFamily: 'Pretendard',
-                  ),
-                ),
-              )
-            ],
-          ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 6.0),
+                      child: Text(
+                        "HYU EOS 2023",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                          fontFamily: 'Pretendard',
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              }),
         ),
       ),
     );
