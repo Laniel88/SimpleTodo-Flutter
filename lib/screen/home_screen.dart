@@ -59,27 +59,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Column(
                   children: [
                     CustomCalendar(
-                        focusedDay: _focusedDate,
-                        eventLoader: (DateTime date) {
-                          if (snapshot.hasData && date != _selectedDate) {
-                            final length = snapshot.data!
-                                .where((todo) => todo.date.toUtc() == date)
-                                .length;
-                            return List.generate(length, (_) => true);
-                          }
-                          return [];
-                        },
-                        onDaySelected: (DateTime selectedDate, _) {
-                          setState(() {
-                            _selectedDate = selectedDate;
-                            _focusedDate = selectedDate;
-                          });
-                        },
-                        selectedDayPredicate: (DateTime date) {
-                          return date.year == _selectedDate.year &&
-                              date.month == _selectedDate.month &&
-                              date.day == _selectedDate.day;
-                        }),
+                      focusedDay: _focusedDate,
+                      eventLoader: (DateTime date) {
+                        if (snapshot.hasData && date != _selectedDate) {
+                          final length = snapshot.data!
+                              .where((todo) => todo.date.toUtc() == date)
+                              .length;
+                          return List.generate(length, (_) => true);
+                        }
+                        return [];
+                      },
+                      onDaySelected: (DateTime selectedDate, _) {
+                        setState(() {
+                          _selectedDate = selectedDate;
+                          _focusedDate = selectedDate;
+                        });
+                      },
+                      selectedDayPredicate: (DateTime date) {
+                        return date.year == _selectedDate.year &&
+                            date.month == _selectedDate.month &&
+                            date.day == _selectedDate.day;
+                      },
+                    ),
                     const CustomDivider(),
                     Expanded(
                       child: ListView.builder(
