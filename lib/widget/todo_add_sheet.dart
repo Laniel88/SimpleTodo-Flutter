@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class TodoAddSheet extends StatefulWidget {
-  final DateTime selectedDate;
+  final Function(String text) saveValue;
 
   const TodoAddSheet({
     Key? key,
-    required this.selectedDate,
+    required this.saveValue,
   }) : super(key: key);
 
   @override
@@ -51,7 +51,7 @@ class _TodoAddSheetState extends State<TodoAddSheet> {
             const Spacer(),
             IconButton(
               onPressed: () {
-                saveValue();
+                widget.saveValue(content);
                 Navigator.of(context).pop();
               },
               icon: const Icon(
@@ -65,13 +65,5 @@ class _TodoAddSheetState extends State<TodoAddSheet> {
         ),
       ),
     );
-  }
-
-  void saveValue() async {
-    await GetIt.I<LocalDatabase>().createTodo(TodoTableCompanion(
-      finished: const Value(false),
-      date: Value(widget.selectedDate),
-      content: Value(content),
-    ));
   }
 }

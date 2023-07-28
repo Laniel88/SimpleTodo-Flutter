@@ -2,7 +2,7 @@ import 'package:simple_todo/database.dart';
 import 'package:simple_todo/widget/custom_calendar.dart';
 import 'package:simple_todo/widget/todo_add_sheet.dart';
 import 'package:simple_todo/widget/todo_card.dart';
-
+import 'package:drift/drift.dart' show Value;
 import 'package:simple_todo/constant/color_palette.dart' as palette;
 import 'package:simple_todo/constant/custom_divider.dart';
 
@@ -34,7 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
             isScrollControlled: true,
             builder: (_) {
               return TodoAddSheet(
-                selectedDate: _selectedDate,
+                saveValue: (String content) async {
+                  await GetIt.I<LocalDatabase>().createTodo(TodoTableCompanion(
+                    finished: const Value(false),
+                    date: Value(_selectedDate),
+                    content: Value(content),
+                  ));
+                },
               );
             },
           );
@@ -94,10 +100,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               GetIt.I<LocalDatabase>().removeTodo(todo.id);
                             },
                             child: TodoCard(
-                                id: todo.id,
-                                date: todo.date.toUtc(),
-                                content: todo.content,
-                                finished: todo.finished),
+                              content: todo.content,
+                              finished: todo.finished,
+                              onTap: () async {
+                                await GetIt.I<LocalDatabase>().updateTodo(
+                                    todo.id,
+                                    TodoTableCompanion(
+                                      finished: Value(!todo.finished),
+                                      date: Value(todo.date.toUtc()),
+                                      content: Value(todo.content),
+                                    ));
+                              },
+                            ),
                           );
                         },
                       ),
